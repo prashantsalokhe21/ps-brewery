@@ -17,4 +17,10 @@ import java.util.UUID;
  */
 public interface BeerService {
     BeerDto getBeerById(UUID beerId);
+
+    BeerDto saveBeer(BeerDto beerDto);
+
+    void updateBeer(String beerId, BeerDto beerDto);
+
+    void deleteBeerById(UUID beerId);
 }
