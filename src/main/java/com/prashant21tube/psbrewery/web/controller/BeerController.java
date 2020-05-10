@@ -20,6 +20,7 @@ import java.util.UUID;
  * Created with IntelliJ IDEA
  * To change this template use File | Settings | File Templates.
  */
+@Deprecated
 @RequestMapping("/api/v1/beer")
 @RestController
 public class BeerController {
