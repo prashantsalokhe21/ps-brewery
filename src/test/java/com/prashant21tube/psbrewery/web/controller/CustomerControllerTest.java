@@ -1,9 +1,8 @@
 package com.prashant21tube.psbrewery.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.prashant21tube.psbrewery.web.controller.v2.BeerControllerV2;
-import com.prashant21tube.psbrewery.web.model.BeerDto;
-import com.prashant21tube.psbrewery.web.services.BeerService;
+import com.prashant21tube.psbrewery.web.model.CustomerDto;
+import com.prashant21tube.psbrewery.web.services.CustomerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -28,17 +27,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Package: com.prashant21tube.psbrewery.web.controller
  * <p>
  * User: lenovo
- * Date: 5/10/2020
- * Time: 3:56 PM
+ * Date: 5/24/2020
+ * Time: 11:28 PM
  * <p>
  * Created with IntelliJ IDEA
  * To change this template use File | Settings | File Templates.
  */
 @RunWith(SpringRunner.class)
-@WebMvcTest(BeerControllerV2.class)
-class BeerControllerTest {
+@WebMvcTest(CustomerController.class)
+class CustomerControllerTest {
+
     @MockBean
-    BeerService beerService;
+    CustomerService customerService;
 
     @Autowired
     MockMvc mockMvc;
@@ -46,60 +46,60 @@ class BeerControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
-    BeerDto validBeer;
+    CustomerDto customer;
 
     @BeforeEach
     void setUp() {
-        validBeer = BeerDto.builder()
+        customer = CustomerDto.builder()
                 .id(UUID.randomUUID())
-                .beerName("Beer1")
-                //.beerStyle("PALE_ALE")
-                .upc(12345689L)
+                .name("Prashant Salokhe")
                 .build();
     }
-
     @Test
-    void getBeer() throws  Exception{
-        given(beerService.getBeerById(any(UUID.class))).willReturn(validBeer);
+    void getCustomer() throws Exception {
+        given(customerService.getCustomerById(any(UUID.class))).willReturn(customer);
 
-        mockMvc.perform(get("/api/v1/beer/"+validBeer.getId().toString()).accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/v1/customer/"+customer.getId().toString()).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
-    void handlePost() throws Exception {
+    void createCustomer() throws Exception {
         //given
-        BeerDto beerDto = validBeer;
-        beerDto.setId(null);
-        BeerDto savedDto = BeerDto.builder().id(UUID.randomUUID()).beerName("New Beer").build();
-        String beerJson = objectMapper.writeValueAsString(beerDto);
+        CustomerDto customerDto = customer;
+        customerDto.setId(null);
+        CustomerDto savedDto = CustomerDto.builder().id(UUID.randomUUID()).name("Kunal Patil").build();
+        String customerJson = objectMapper.writeValueAsString(customerDto);
 
-        given(beerService.saveBeer(any())).willReturn(savedDto);
+        given(customerService.saveCustomer(any())).willReturn(savedDto);
 
-        mockMvc.perform(post("/api/v1/beer/")
+        mockMvc.perform(post("/api/v1/customer/")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(beerJson))
+                .content(customerJson))
                 .andExpect(status().isCreated());
-
     }
 
     @Test
-    void handleUpdate() throws Exception {
+    void handleUpdate() throws Exception{
         //given
-        BeerDto beerDto = validBeer;
-        validBeer.setId(null);
-        String beerDtaJSON = objectMapper.writeValueAsString(beerDto);
+        CustomerDto customerDto = customer;
+        customerDto.setId(null);
+        String customerDtoJSON = objectMapper.writeValueAsString(customerDto);
 
         //when
-        mockMvc.perform(put("/api/v1/beer/"+ UUID.randomUUID())
+        mockMvc.perform(put("/api/v1/customer/"+ UUID.randomUUID())
                 .accept(MediaType.APPLICATION_JSON)
-                .content(beerDtaJSON)
+                .content(customerDtoJSON)
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isNoContent());
 
-        then(beerService).should().updateBeer(any(), any());
+        then(customerService).should().updateCustomer(any(), any());
+    }
+
+    @Test
+    void handleDelete() {
     }
 }
