@@ -32,5 +32,4 @@ public class CustomerDto {
     @NotNull
     @Size(min = 3, max = 300)
     private String name;
-
 }
